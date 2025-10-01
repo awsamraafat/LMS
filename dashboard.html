@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - منصة محمود يس</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <script>
+    (function(){
+        try {
+            const u = JSON.parse(localStorage.getItem('user'));
+            if (!u) window.location.href = 'index.html';
+        } catch(_) { window.location.href = 'index.html'; }
+    })();
+    </script>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo" style="text-decoration:none">
+                <img src="pic/logo.png" alt="Logo">
+            </a>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html#home" class="nav-link">الرئيسية</a>
+                </li>
+                <li class="nav-item">
+                    <a href="index.html#courses" class="nav-link">الدورات</a>
+                </li>
+                <li class="nav-item">
+                    <a href="index.html#about" class="nav-link">من نحن</a>
+                </li>
+            </ul>
+            <div class="nav-actions">
+                <div id="userMenu" class="user-menu" style="display: none;">
+                    <div class="user-info">
+                        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='%23667eea'/><text x='50' y='60' text-anchor='middle' fill='white' font-size='40'>👤</text></svg>" alt="User" class="user-avatar">
+                        <span class="user-name"></span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="user-dropdown">
+                        <a href="dashboard.html" class="dropdown-item active">
+                            <i class="fas fa-tachometer-alt"></i>
+                            لوحة التحكم
+                        </a>
+                        <hr>
+                        <a href="#" id="logoutBtn" class="dropdown-item">
+                            <i class="fas fa-sign-out-alt"></i>
+                            تسجيل الخروج
+                        </a>
+                    </div>
+                </div>
+                <div id="authButtons" class="auth-buttons">
+                    <button class="btn btn-outline" id="loginBtn">
+                        <i class="fas fa-sign-in-alt"></i>
+                        تسجيل الدخول
+                    </button>
+                    <button class="btn btn-primary" id="registerBtn">
+                        <i class="fas fa-user-plus"></i>
+                        إنشاء حساب
+                    </button>
+                </div>
+            </div>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <a href="#overview" class="menu-item active" data-section="overview">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>نظرة عامة</span>
+                </a>
+                <a href="#my-courses" class="menu-item" data-section="my-courses">
+                    <i class="fas fa-book"></i>
+                    <span>دوراتي</span>
+                </a>
+                <a href="#progress" class="menu-item" data-section="progress">
+                    <i class="fas fa-chart-line"></i>
+                    <span>التقدم</span>
+                </a>
+                <a href="#assignments" class="menu-item" data-section="assignments">
+                    <i class="fas fa-tasks"></i>
+                    <span>الواجبات</span>
+                </a>
+                <a href="#exams" class="menu-item" data-section="exams">
+                    <i class="fas fa-clipboard-check"></i>
+                    <span>الامتحانات</span>
+                </a>
+                <a href="#certificates" class="menu-item" data-section="certificates">
+                    <i class="fas fa-certificate"></i>
+                    <span>الشهادات</span>
+                </a>
+                <a href="#messages" class="menu-item" data-section="messages">
+                    <i class="fas fa-envelope"></i>
+                    <span>الرسائل</span>
+                    <span class="badge">3</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Overview Section -->
+            <section id="overview" class="dashboard-section active">
+                <div class="section-header">
+                    <h1>مرحباً، أحمد محمد</h1>
+                    <p>إليك نظرة عامة على تقدمك في التعلم</p>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>5</h3>
+                            <p>دورات مسجلة</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-play-circle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>120</h3>
+                            <p>فيديو تم مشاهدته</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>3</h3>
+                            <p>شهادات مكتملة</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>45</h3>
+                            <p>ساعة تعلم</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="content-grid">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h3>النشاط الأخير</h3>
+                            <a href="#" class="view-all">عرض الكل</a>
+                        </div>
+                        <div class="activity-list">
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-play"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <h4>شاهد فيديو: المعادلات الخطية</h4>
+                                    <p>من دورة الرياضيات الأساسية</p>
+                                    <span class="activity-time">منذ ساعتين</span>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <h4>أكمل تمرين: الجبر</h4>
+                                    <p>درجة: 95/100</p>
+                                    <span class="activity-time">منذ 4 ساعات</span>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-certificate"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <h4>حصلت على شهادة</h4>
+                                    <p>دورة الجبر المتقدم</p>
+                                    <span class="activity-time">منذ يومين</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h3>دوراتي النشطة</h3>
+                            <a href="my-courses.html" class="view-all">عرض الكل</a>
+                        </div>
+                        <div class="course-list">
+                            <div class="course-item">
+                                <div class="course-info">
+                                    <h4>الرياضيات الأساسية</h4>
+                                    <p>التقدم: 75%</p>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 75%"></div>
+                                </div>
+                                <a href="course-detail.html" class="btn btn-sm btn-primary">متابعة</a>
+                            </div>
+                            <div class="course-item">
+                                <div class="course-info">
+                                    <h4>الجبر المتقدم</h4>
+                                    <p>التقدم: 60%</p>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 60%"></div>
+                                </div>
+                                <a href="course-detail.html" class="btn btn-sm btn-primary">متابعة</a>
+                            </div>
+                            <div class="course-item">
+                                <div class="course-info">
+                                    <h4>التفاضل والتكامل</h4>
+                                    <p>التقدم: 30%</p>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 30%"></div>
+                                </div>
+                                <a href="course-detail.html" class="btn btn-sm btn-primary">متابعة</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- My Courses Section -->
+            <section id="my-courses" class="dashboard-section">
+                <div class="section-header">
+                    <h1>دوراتي</h1>
+                    <p>جميع الدورات المسجلة</p>
+                </div>
+
+                <div class="courses-grid">
+                    <div class="course-card">
+                        <div class="course-image">
+                            <div class="course-status completed">مكتمل</div>
+                        </div>
+                        <div class="course-content">
+                            <h3>الرياضيات الأساسية</h3>
+                            <p>تعلم أساسيات الرياضيات من الصفر</p>
+                            <div class="course-progress">
+                                <div class="progress-info">
+                                    <span>التقدم: 100%</span>
+                                    <span>40/40 درس</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 100%"></div>
+                                </div>
+                            </div>
+                            <div class="course-actions">
+                                <a href="course-detail.html" class="btn btn-primary">مراجعة</a>
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="course-card">
+                        <div class="course-image">
+                            <div class="course-status in-progress">قيد التقدم</div>
+                        </div>
+                        <div class="course-content">
+                            <h3>الجبر المتقدم</h3>
+                            <p>تعمق في مفاهيم الجبر والمعادلات</p>
+                            <div class="course-progress">
+                                <div class="progress-info">
+                                    <span>التقدم: 60%</span>
+                                    <span>24/40 درس</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 60%"></div>
+                                </div>
+                            </div>
+                            <div class="course-actions">
+                                <a href="course-detail.html" class="btn btn-primary">متابعة</a>
+                                <a href="#" class="btn btn-outline">التفاصيل</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="course-card">
+                        <div class="course-image">
+                            <div class="course-status not-started">لم يبدأ</div>
+                        </div>
+                        <div class="course-content">
+                            <h3>التفاضل والتكامل</h3>
+                            <p>مفاهيم متقدمة في التفاضل والتكامل</p>
+                            <div class="course-progress">
+                                <div class="progress-info">
+                                    <span>التقدم: 0%</span>
+                                    <span>0/50 درس</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="course-actions">
+                                <a href="course-detail.html" class="btn btn-primary">ابدأ الآن</a>
+                                <a href="#" class="btn btn-outline">التفاصيل</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Progress Section -->
+            <section id="progress" class="dashboard-section">
+                <div class="section-header">
+                    <h1>تقدمي في التعلم</h1>
+                    <p>إحصائيات مفصلة عن تقدمك</p>
+                </div>
+
+                <div class="progress-content">
+                    <div class="progress-chart">
+                        <h3>ساعات التعلم الشهرية</h3>
+                        <canvas id="learningChart" width="400" height="200"></canvas>
+                    </div>
+                    
+                    <div class="progress-stats">
+                        <div class="stat-item">
+                            <h4>إجمالي ساعات التعلم</h4>
+                            <span class="stat-value">45 ساعة</span>
+                        </div>
+                        <div class="stat-item">
+                            <h4>متوسط الساعات اليومية</h4>
+                            <span class="stat-value">1.5 ساعة</span>
+                        </div>
+                        <div class="stat-item">
+                            <h4>أطول جلسة تعلم</h4>
+                            <span class="stat-value">3 ساعات</span>
+                        </div>
+                        <div class="stat-item">
+                            <h4>أيام التعلم المتتالية</h4>
+                            <span class="stat-value">15 يوم</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Assignments Section -->
+            <section id="assignments" class="dashboard-section">
+                <div class="section-header">
+                    <h1>الواجبات</h1>
+                    <p>الواجبات المطلوبة والمكتملة</p>
+                </div>
+
+                <div class="assignments-list">
+                    <div class="assignment-item">
+                        <div class="assignment-info">
+                            <h4>تمرين المعادلات الخطية</h4>
+                            <p>من دورة الرياضيات الأساسية</p>
+                            <span class="due-date">موعد التسليم: 15 ديسمبر 2024</span>
+                        </div>
+                        <div class="assignment-status pending">
+                            <i class="fas fa-clock"></i>
+                            <span>معلق</span>
+                        </div>
+                        <div class="assignment-actions">
+                            <a href="assignment.html" class="btn btn-primary">بدء التمرين</a>
+                        </div>
+                    </div>
+
+                    <div class="assignment-item">
+                        <div class="assignment-info">
+                            <h4>تمرين الجبر المتقدم</h4>
+                            <p>من دورة الجبر المتقدم</p>
+                            <span class="due-date">تم التسليم: 10 ديسمبر 2024</span>
+                        </div>
+                        <div class="assignment-status completed">
+                            <i class="fas fa-check-circle"></i>
+                            <span>مكتمل - 95/100</span>
+                        </div>
+                        <div class="assignment-actions">
+                            <a href="assignment-result.html" class="btn btn-outline">عرض النتيجة</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Exams Section -->
+            <section id="exams" class="dashboard-section">
+                <div class="section-header">
+                    <h1>الامتحانات</h1>
+                    <p>الامتحانات المتاحة والنتائج</p>
+                </div>
+
+                <div class="exams-grid">
+                    <div class="exam-card">
+                        <div class="exam-header">
+                            <h3>امتحان الرياضيات الأساسية</h3>
+                            <span class="exam-type">نهائي</span>
+                        </div>
+                        <div class="exam-info">
+                            <p><i class="fas fa-clock"></i> 60 دقيقة</p>
+                            <p><i class="fas fa-question-circle"></i> 50 سؤال</p>
+                            <p><i class="fas fa-calendar"></i> متاح حتى 20 ديسمبر</p>
+                        </div>
+                        <div class="exam-actions">
+                            <a href="exam.html" class="btn btn-primary">بدء الامتحان</a>
+                        </div>
+                    </div>
+
+                    <div class="exam-card">
+                        <div class="exam-header">
+                            <h3>امتحان الجبر المتقدم</h3>
+                            <span class="exam-type completed">مكتمل</span>
+                        </div>
+                        <div class="exam-info">
+                            <p><i class="fas fa-check-circle"></i> تم الانتهاء</p>
+                            <p><i class="fas fa-star"></i> النتيجة: 88/100</p>
+                            <p><i class="fas fa-calendar"></i> تاريخ الامتحان: 5 ديسمبر</p>
+                        </div>
+                        <div class="exam-actions">
+                            <a href="exam-result.html" class="btn btn-outline">عرض النتيجة</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Certificates Section -->
+            <section id="certificates" class="dashboard-section">
+                <div class="section-header">
+                    <h1>شهاداتي</h1>
+                    <p>الشهادات المحصل عليها</p>
+                </div>
+
+                <div class="certificates-grid">
+                    <div class="certificate-card">
+                        <div class="certificate-icon">
+                            <i class="fas fa-certificate"></i>
+                        </div>
+                        <div class="certificate-info">
+                            <h3>شهادة الرياضيات الأساسية</h3>
+                            <p>تم الحصول عليها في 10 ديسمبر 2024</p>
+                            <span class="certificate-grade">درجة الامتياز</span>
+                        </div>
+                        <div class="certificate-actions">
+                            
+                            <a href="#" class="btn btn-outline">تحميل PDF</a>
+                        </div>
+                    </div>
+
+                    <div class="certificate-card">
+                        <div class="certificate-icon">
+                            <i class="fas fa-medal"></i>
+                        </div>
+                        <div class="certificate-info">
+                            <h3>شهادة الجبر المتقدم</h3>
+                            <p>تم الحصول عليها في 8 ديسمبر 2024</p>
+                            <span class="certificate-grade">درجة الامتياز</span>
+                        </div>
+                        <div class="certificate-actions">
+                            
+                            <a href="#" class="btn btn-outline">تحميل PDF</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Messages Section -->
+            <section id="messages" class="dashboard-section">
+                <div class="section-header">
+                    <h1>الرسائل</h1>
+                    <p>رسائل من المدربين والإدارة</p>
+                </div>
+
+                <div class="messages-list">
+                    <div class="message-item unread">
+                        <div class="message-avatar">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <div class="message-content">
+                            <div class="message-header">
+                                <h4>مستر محمود يس</h4>
+                                <span class="message-time">منذ ساعة</span>
+                            </div>
+                            <p>مرحباً أحمد، أتمنى أن تكون بخير. لاحظت تقدمك الممتاز في دورة الجبر المتقدم...</p>
+                        </div>
+                        <div class="message-status">
+                            <span class="unread-badge">جديد</span>
+                        </div>
+                    </div>
+
+                    <div class="message-item">
+                        <div class="message-avatar">
+                            <i class="fas fa-user-cog"></i>
+                        </div>
+                        <div class="message-content">
+                            <div class="message-header">
+                                <h4>فريق الدعم الفني</h4>
+                                <span class="message-time">منذ يومين</span>
+                            </div>
+                            <p>تم حل المشكلة التقنية التي واجهتها. يمكنك الآن متابعة التعلم بشكل طبيعي.</p>
+                        </div>
+                    </div>
+
+                    <div class="message-item">
+                        <div class="message-avatar">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <div class="message-content">
+                            <div class="message-header">
+                                <h4>إشعار النظام</h4>
+                                <span class="message-time">منذ 3 أيام</span>
+                            </div>
+                            <p>تهانينا! لقد أكملت دورة الرياضيات الأساسية بنجاح.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="courses.js"></script>
+    <script src="script.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الامتحان - منصة محمود يس</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo" style="text-decoration:none">
+                <img src="pic/logo.png" alt="Logo">
+            </a>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html#home" class="nav-link">الرئيسية</a>
+                </li>
+                <li class="nav-item">
+                    <a href="index.html#courses" class="nav-link">الدورات</a>
+                </li>
+                <li class="nav-item">
+                    <a href="index.html#about" class="nav-link">من نحن</a>
+                </li>
+            </ul>
+            <div class="nav-actions">
+                <div id="userMenu" class="user-menu" style="display: none;">
+                    <div class="user-info">
+                        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='%23667eea'/><text x='50' y='60' text-anchor='middle' fill='white' font-size='40'>👤</text></svg>" alt="User" class="user-avatar">
+                        <span class="user-name"></span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="user-dropdown">
+                        <a href="dashboard.html" class="dropdown-item">
+                            <i class="fas fa-tachometer-alt"></i>
+                            لوحة التحكم
+                        </a>
+                        <hr>
+                        <a href="#" id="logoutBtn" class="dropdown-item">
+                            <i class="fas fa-sign-out-alt"></i>
+                            تسجيل الخروج
+                        </a>
+                    </div>
+                </div>
+                <div id="authButtons" class="auth-buttons">
+                    <button class="btn btn-outline" id="loginBtn">
+                        <i class="fas fa-sign-in-alt"></i>
+                        تسجيل الدخول
+                    </button>
+                    <button class="btn btn-primary" id="registerBtn">
+                        <i class="fas fa-user-plus"></i>
+                        إنشاء حساب
+                    </button>
+                </div>
+            </div>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <section class="courses" style="padding-top:110px">
+        <div class="container">
+            <div class="section-header">
+                <h2 id="examTitle" class="section-title">الامتحان</h2>
+                <p class="section-subtitle"><span id="timer"><i class="fas fa-clock"></i> 00:00:00</span></p>
+            </div>
+
+            <div class="content-card">
+                <div class="card-header"><h3>الأسئلة</h3></div>
+                <div class="card-body" id="examContainer"></div>
+                <div style="padding:16px;display:flex;gap:10px;justify-content:space-between;align-items:center">
+                    <div id="progressInfo" style="opacity:.8"></div>
+                    <div style="display:flex;gap:10px">
+                        <button id="prevBtn" class="btn btn-outline">السابق</button>
+                        <button id="nextBtn" class="btn btn-primary">التالي</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+    <script src="exams.js"></script>
+    <script>
+    (function(){
+        // Guard: require login
+        try { if (!localStorage.getItem('user')) { window.location.href = 'index.html'; return; } } catch(_) {}
+
+        const params = new URLSearchParams(window.location.search);
+        const examTitle = params.get('title') || 'امتحان';
+        const durationMin = parseInt(params.get('duration') || '60', 10);
+        const courseId = params.get('course') || 'basic-math';
+        const titleEl = document.getElementById('examTitle');
+        if (titleEl) titleEl.textContent = examTitle;
+
+        // Load questions from shared bank
+        let questions = (window.EXAMS && window.EXAMS[courseId] && window.EXAMS[courseId][examTitle]) ? window.EXAMS[courseId][examTitle] : [];
+        // Fallbacks if not found
+        if (!questions || !questions.length) {
+            if (window.EXAMS && window.EXAMS[courseId]) {
+                // Try a common calculus title
+                const alt = window.EXAMS[courseId]['امتحان شامل تفاضل و تكامل'];
+                if (alt && alt.length) questions = alt;
+            }
+        }
+        if (!questions || !questions.length) {
+            const demo = window.EXAMS && window.EXAMS['basic-math'] && window.EXAMS['basic-math']['امتحان تجريبي'];
+            if (demo && demo.length) questions = demo;
+        }
+
+        const container = document.getElementById('examContainer');
+        const progressInfo = document.getElementById('progressInfo');
+        let currentIndex = 0;
+        const answers = {}; // { qid: optionIndex }
+
+        function renderCurrent(){
+            container.innerHTML = '';
+            const q = questions[currentIndex];
+            const block = document.createElement('div');
+            block.className = 'question-block';
+            block.style.cssText = 'padding:16px;';
+            const opts = q.options.map((opt, oi) => {
+                const id = `${q.id}_${oi}`;
+                const checked = answers[q.id] === oi ? 'checked' : '';
+                return `<label style=\"display:block;margin:6px 0;cursor:pointer\"><input type=\"radio\" name=\"${q.id}\" value=\"${oi}\" ${checked} style=\"margin-left:6px\"> ${opt}</label>`;
+            }).join('');
+            block.innerHTML = `<div style=\"font-weight:700;margin-bottom:8px\">${currentIndex+1}. ${q.text}</div>${opts}`;
+            container.appendChild(block);
+            if (progressInfo) progressInfo.textContent = `سؤال ${currentIndex+1} من ${questions.length}`;
+            document.getElementById('prevBtn').style.visibility = currentIndex === 0 ? 'hidden' : 'visible';
+            document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'تسليم' : 'التالي';
+        }
+        renderCurrent();
+
+        // Timer
+        const timerEl = document.getElementById('timer');
+        let remaining = durationMin * 60; // seconds
+        function format(s){
+            const h = Math.floor(s/3600); const m = Math.floor((s%3600)/60); const sec = s%60;
+            return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+        }
+        function tick(){
+            if (timerEl) timerEl.innerHTML = `<i class="fas fa-clock"></i> ${format(remaining)}`;
+            if (remaining <= 0) { submit(); return; }
+            remaining--; setTimeout(tick, 1000);
+        }
+        tick();
+
+        // Submit/score
+        function submit(){
+            let score = 0;
+            questions.forEach(q => {
+                const ans = answers[q.id];
+                if (typeof ans === 'number' && ans === q.correct) score++;
+            });
+            const total = questions.length;
+            const percent = Math.round((score/total)*100);
+            const details = questions.map(q => ({ id: q.id, correct: q.correct, answer: typeof answers[q.id]==='number'?answers[q.id]:-1 })).map(d => `${d.id}:${d.answer}:${d.correct}`).join(',');
+            const qs = new URLSearchParams({ course: courseId, title: examTitle, score: String(score), total: String(total), details });
+            window.location.href = `exam-result.html?${qs.toString()}`;
+        }
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        if (prevBtn) prevBtn.addEventListener('click', () => { currentIndex = Math.max(0, currentIndex - 1); renderCurrent(); });
+        if (nextBtn) nextBtn.addEventListener('click', () => {
+            const q = questions[currentIndex];
+            const sel = document.querySelector(`input[name=\"${q.id}\"]:checked`);
+            if (!sel) { if (window.showNotification) window.showNotification('اختر إجابة أولاً', 'error'); return; }
+            answers[q.id] = parseInt(sel.value, 10);
+            if (currentIndex === questions.length - 1) { submit(); return; }
+            currentIndex = Math.min(questions.length - 1, currentIndex + 1);
+            renderCurrent();
+        });
+    })();
+    </script>
+</body>
+</html>
+
